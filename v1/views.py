@@ -141,7 +141,6 @@ def list_user_groups_all(request, user_pk):
             user = User.objects.get(id=user_pk)
             groups_id = Access.objects.filter(user=user).values_list('group', flat=True)
             groups = Group.objects.filter(id__in=groups_id)
-            print(groups)
             serializer = GroupSerializer(groups, many=True)
             data_list = ['id', 'name', 'status', 'user']
             return showAll(bulkToDict(serializer.data, data_list))
@@ -158,8 +157,6 @@ def access_post(request):
             return errorMessage({"info": "Faltan parametros de registro."})
         data = oneToDict(request.data, allowParams)
         group = Group.objects.get(id=data['group'])
-        print(group.user)
-        print(request.user)
         if request.user == group.user or request.user.is_superuser:
             invite = Access.objects.filter(group=data['group'], user_id=data['user'])
             if len(invite) == 0:
@@ -451,11 +448,13 @@ class UserGroupNote(APIView):
     def post(self, request, user_pk, group_pk):
         try:
             group = Group.objects.get(id=group_pk)
-            if (group.user == request.user and str(request.user.id) == user_pk) or request.user.is_superuser:
+            # group.user == request.user
+            if (len(Access.objects.filter(group=group, user=request.user)) != 0 and str(request.user.id) == user_pk) or request.user.is_superuser:
                 allowParams = ['title', 'body']
                 if not isValidParams(request.data, allowParams):
                     return errorMessage({"info": "Faltan parametros de registro."})
                 data = oneToDict(request.data, allowParams)
+                data.update({'user': user_pk, 'group': group_pk})
                 serializer = NoteSerializer(data=data)
                 if serializer.is_valid():
                     serializer.save()
