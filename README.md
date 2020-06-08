@@ -25,7 +25,7 @@ JWT Authorization header empleada es  `"Bearer"`
 User
   - `"v1/users/"` soporta "GET" (listar los usuarios del sistema), "POST" (Permite el registro de usuarios al sistema, es neceario validar el registro desde el enlace enviado al correo electrónico.)
   - `"v1/users/{user}"` soporta "GET" (lista un usuario en específico), "PUT/PATCH" (permite modificar datos del usuario, esta protegido con JWT), "DELETE" (permite eliminar el usuario especificado, esta protegido con JWT)
-  - `"v1/users/token"` soporta "GET" (empleado como endpoint de login, requiere el email y password para el intercambio de credenciales JWT)
+  - `"v1/users/token"` soporta "POST" (empleado como endpoint de login, requiere el email y password para el intercambio de credenciales JWT)
   - `"v1/token/refresh"` soporta "GET" (extiende el uso del lifetime del token JWT, es necesario proveer el refresh token de nuestra sesión)
   - `"v1/verify/{token}"` soporta "GET" (este 'token', es importante ya que valida el registro del usuario, habilitandolo para realizar operaciones dentro del sistema.)
   - `"v1/{user}/resend"` soporta "GET" (endpoint que permite refrescar el token de validación de registro, generando uno nuevo y enviandolo mediante E-mail a la dirección con la cual se registro.)
